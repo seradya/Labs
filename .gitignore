@@ -1,0 +1,4 @@
+**/build
+**/toolchain/SVD
+**/toolchain/OpenOCD
+**toolchain/gcc-arm-none-eabi-10.3-2021.10
