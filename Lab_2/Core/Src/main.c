@@ -22,11 +22,10 @@
 #include "usart.h"
 #include "gpio.h"
 
-#include "FreeRTOS.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "FreeRTOS.h"
+#include "task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define STACK_SIZE 128
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -52,7 +52,8 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void GreenTask(void *argument);
+void BlueTask(void *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,7 +92,8 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  xTaskCreate(GreenTask, "GreenTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  vTaskStartScheduler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -149,7 +151,20 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void GreenTask(void *argument)
+{
+  while(1)
+  {
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+	vTaskDelay(1500/ portTICK_PERIOD_MS);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+  vTaskDelay(1500/ portTICK_PERIOD_MS);
+  }
 
+	//a task can delete itself by passing NULL to vTaskDelete
+	vTaskDelete(NULL);
+
+}
 /* USER CODE END 4 */
 
 /**

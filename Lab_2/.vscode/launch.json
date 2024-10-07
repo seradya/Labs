@@ -1,0 +1,62 @@
+{
+    "version": "0.12.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "build/Lab_2.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "runToEntryPoint": "main",
+            "preLaunchTask": "build",
+            "device": "STM32L152RBT6",
+            "svdFile": "${workspaceRoot}/../toolchain/SVD/cmsis-svd-master/data/STMicro/STM32L15xxxA.svd",
+            "showDevDebugOutput": "raw",
+            "configFiles": [
+                "${workspaceRoot}/../toolchain/OpenOCD/openocd-master/tcl/interface/stlink-v2.cfg",
+                "${workspaceRoot}/../toolchain/OpenOCD/openocd-master/tcl/target/stm32l1.cfg"
+            ],
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 8000000,
+                "swoFrequency": 2000000,
+                "source": "probe",
+                "decoders": [
+                    {
+                        "type": "console",
+                        "label": "ITM",
+                        "port": 0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "C/C++: arm-none-eabi-gcc build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: arm-none-eabi-gcc build active file",
+            "miDebuggerPath": "gdb"
+            
+        }
+    ]
+}
