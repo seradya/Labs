@@ -4,7 +4,15 @@
         "stm32l152xc.h": "c",
         "string.h": "c",
         "stm32l1xx_hal.h": "c",
-        "freertos.h": "c"
+        "freertos.h": "c",
+        "array": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ranges": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }

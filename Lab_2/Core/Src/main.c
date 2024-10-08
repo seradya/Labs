@@ -28,6 +28,7 @@
 #include "task.h"
 
 #include "BME280.h"
+#include "vl6180.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,6 +64,7 @@ TaskHandle_t BlueTaskHandle;
 void GreenTask(void *argument);
 void BlueTask(void *argument);
 void BMETask(void *argument);
+void VLXTask(void *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -100,12 +102,13 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C2_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  BME280_Init();
 
   xTaskCreate(GreenTask, "GreenTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   xTaskCreate(BlueTask, "BlueTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
   xTaskCreate(BMETask, "BMETask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(VLXTask, "VLXTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   vTaskSuspend(BlueTaskHandle);
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -194,6 +197,9 @@ void BMETask(void *argument)
   volatile uint32_t pressure = 0;
   volatile float temperature = 0;
   uint8_t str[32];
+
+  BME280_Init();
+
   while(1)
   {
     pressure = BME280_ReadPressure();
@@ -215,6 +221,13 @@ void BMETask(void *argument)
     }
   }
 	vTaskDelete(NULL);
+}
+
+void VLXTask(void *argument)
+{
+
+ vTaskDelete(NULL);
+
 }
 /* USER CODE END 4 */
 
