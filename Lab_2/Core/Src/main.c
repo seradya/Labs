@@ -26,6 +26,8 @@
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
 #include "task.h"
+
+#include "BME280.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,7 +37,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define STACK_SIZE 128
+#define STACK_SIZE 256
+
+#define P_THS 120000
+#define T_THS 25
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -52,8 +57,12 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+
+TaskHandle_t BlueTaskHandle;
+
 void GreenTask(void *argument);
 void BlueTask(void *argument);
+void BMETask(void *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,7 +101,12 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  BME280_Init();
+
   xTaskCreate(GreenTask, "GreenTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(BlueTask, "BlueTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
+  xTaskCreate(BMETask, "BMETask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  vTaskSuspend(BlueTaskHandle);
   vTaskStartScheduler();
   /* USER CODE END 2 */
 
@@ -155,15 +169,52 @@ void GreenTask(void *argument)
 {
   while(1)
   {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-	vTaskDelay(1500/ portTICK_PERIOD_MS);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
-  vTaskDelay(1500/ portTICK_PERIOD_MS);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+	  vTaskDelay(1000/ portTICK_PERIOD_MS);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
   }
+  	vTaskDelete(NULL);
+}
 
-	//a task can delete itself by passing NULL to vTaskDelete
+void BlueTask(void *argument)
+{
+  while(1)
+  {
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+	  vTaskDelay(100/ portTICK_PERIOD_MS);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+    vTaskDelay(100/ portTICK_PERIOD_MS);
+  }
 	vTaskDelete(NULL);
+}
 
+void BMETask(void *argument)
+{
+  volatile uint32_t pressure = 0;
+  volatile float temperature = 0;
+  uint8_t str[32];
+  while(1)
+  {
+    pressure = BME280_ReadPressure();
+    temperature = BME280_ReadTemperature();
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
+
+    sprintf(str, "Temp: %2.2fC  Press: %dPa\n", temperature, pressure);
+    HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
+
+    if((pressure > P_THS) || (temperature > T_THS))
+    {
+      vTaskResume(BlueTaskHandle);
+      sprintf(str, "Warning! Check data!  ");
+      HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
+    }
+    else
+    {
+      vTaskSuspend(BlueTaskHandle);
+    }
+  }
+	vTaskDelete(NULL);
 }
 /* USER CODE END 4 */
 

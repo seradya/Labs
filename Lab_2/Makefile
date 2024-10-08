@@ -65,7 +65,8 @@ FreeRTOS-Kernel/queue.c \
 FreeRTOS-Kernel/tasks.c \
 FreeRTOS-Kernel/timers.c \
 FreeRTOS-Kernel/portable/MemMang/heap_4.c \
-FreeRTOS-Kernel/portable/GCC/ARM_CM3/port.c
+FreeRTOS-Kernel/portable/GCC/ARM_CM3/port.c \
+Core/Src/BME280.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -154,7 +155,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = STM32L152RBTxA_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys 
+LIBS = -lc -lm -lnosys -u_printf_float
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
