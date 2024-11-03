@@ -29,6 +29,7 @@
 
 #include "BME280.h"
 #include "vl6180.h"
+#include "Accel.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,7 +53,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile int8_t switch_state = -1;
+volatile int8_t new_switch_state;
+volatile uint32_t Tim2Cnt=0;
+volatile uint32_t TickCnt;
+volatile uint16_t SwitchCnt=0;
+extern State_ptr VL6180_State;
+extern VL6180x_AlsData_t Als;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,6 +72,7 @@ void GreenTask(void *argument);
 void BlueTask(void *argument);
 void BMETask(void *argument);
 void VLXTask(void *argument);
+void ACCTask(void *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -108,7 +116,8 @@ int main(void)
   xTaskCreate(GreenTask, "GreenTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   xTaskCreate(BlueTask, "BlueTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
   xTaskCreate(BMETask, "BMETask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(VLXTask, "VLXTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  //xTaskCreate(VLXTask, "VLXTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(ACCTask, "ACCTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   vTaskSuspend(BlueTaskHandle);
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -225,9 +234,35 @@ void BMETask(void *argument)
 
 void VLXTask(void *argument)
 {
+  if (!stmpe1600_ini())
+  {
+		uint32_t status = vl6180_ini();
+		if(status)
+    {
+      vTaskDelete(NULL);
+    }
+  }
+  while(1)
+  {
+    vl6180_ReadData();
+  }
+  vTaskDelete(NULL);
 
- vTaskDelete(NULL);
+}
 
+void ACCTask(void *argument)
+{
+  int16_t x, y, z;
+  LIS331_t lis331;
+  lis331.mode = USE_I2C; 
+  lis331.address = 0x19;  
+  LIS331_Init(&lis331, USE_I2C);
+  while(1)
+  {
+    LIS331_ReadAxes(&lis331, &x, &y, &z);
+  }
+  
+  vTaskDelete(NULL);
 }
 /* USER CODE END 4 */
 

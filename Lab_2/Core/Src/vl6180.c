@@ -1,6 +1,6 @@
 #include "vl6180.h"
 //-------------------------------------------------
-extern UART_HandleTypeDef huart2;
+//extern UART_HandleTypeDef huart2;
 extern I2C_HandleTypeDef hi2c1;
 //-------------------------------------------------
 extern uint16_t gpio_data;
@@ -303,7 +303,7 @@ int vl6180_AlsGetInterruptStatus(uint8_t *pIntStatus)
 //-------------------------------------------------
 void vl6180_PollDelay(void)
 {
-  Delay_MS_Tim(5);
+  //Delay_MS_Tim(5);
 }
 //-------------------------------------------------
 int vl6180_AlsGetLux(uint32_t *pLux)
@@ -397,7 +397,7 @@ void vl6180_AlsState(void)
   int status;
 	status = vl6180_AlsPollMeasurement(&Als);
   if (status) {
-    HAL_UART_Transmit(&huart2, (uint8_t*)"Er 4",6,0x1000);
+    //HAL_UART_Transmit(&huart2, (uint8_t*)"Er 4",6,0x1000);
   }
 }
 //-------------------------------------------------
@@ -406,8 +406,8 @@ void vl6180_ReadData(void)
   int status;
 	if (new_switch_state != switch_state)
 	{
-		sprintf(str1,"Switch state: %d\r\n",new_switch_state);
-		HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);
+		//sprintf(str1,"Switch state: %d\r\n",new_switch_state);
+		//HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);
 		switch_state=new_switch_state;
 		status = vl6180_Prepare();
 		if(status) Error_Handler();
@@ -433,8 +433,8 @@ int vl6180_ini(void)
 	status = vl6180_WaitDeviceBooted();
 	if(status) return -1;
 	vl6180_ReadByte(IDENTIFICATION__MODEL_ID, &dt);
-	sprintf(str1,"vl6180 ID: 0x%02X\r\n",dt);
-	HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);
+	//sprintf(str1,"vl6180 ID: 0x%02X\r\n",dt);
+	//HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);
   return status;
 }
 //-------------------------------------------------

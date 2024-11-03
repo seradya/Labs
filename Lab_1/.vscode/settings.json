@@ -3,6 +3,7 @@
         "Makefile": "cpp",
         "stm32l152xc.h": "c",
         "string.h": "c",
-        "stm32l1xx_hal.h": "c"
+        "stm32l1xx_hal.h": "c",
+        "stm32l1xx_hal_conf.h": "c"
     }
 }

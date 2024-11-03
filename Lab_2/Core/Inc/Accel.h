@@ -1,104 +1,57 @@
-#ifndef LSM303DLHC_H_
-#define LSM303DLHC_H_
- 
-#include "stm32f3xx_hal.h"
-#include <string.h>
-//------------------------------------------------
-#define ABS(x)         (x < 0) ? (-x) : x
-//------------------------------------------------
-#define LD_PORT GPIOE
-#define LD3 GPIO_PIN_9 //RED1
-#define LD4 GPIO_PIN_8 //BLUE1
-#define LD5 GPIO_PIN_10 //ORANGE1
-#define LD6 GPIO_PIN_15 //GREEN1
-#define LD7 GPIO_PIN_11 //GREEN2
-#define LD8 GPIO_PIN_14 //ORANGE2
-#define LD9 GPIO_PIN_12 //BLUE2
-#define LD10 GPIO_PIN_13 //RED2
-#define LD3_ON HAL_GPIO_WritePin(LD_PORT, LD3, GPIO_PIN_SET) //RED1
-#define LD4_ON HAL_GPIO_WritePin(LD_PORT, LD4, GPIO_PIN_SET) //BLUE1
-#define LD5_ON HAL_GPIO_WritePin(LD_PORT, LD5, GPIO_PIN_SET) //ORANGE1
-#define LD6_ON HAL_GPIO_WritePin(LD_PORT, LD6, GPIO_PIN_SET) //GREEN1
-#define LD7_ON HAL_GPIO_WritePin(LD_PORT, LD7, GPIO_PIN_SET) //GREEN2
-#define LD8_ON HAL_GPIO_WritePin(LD_PORT, LD8, GPIO_PIN_SET) //ORANGE2
-#define LD9_ON HAL_GPIO_WritePin(LD_PORT, LD9, GPIO_PIN_SET) //BLUE2
-#define LD10_ON HAL_GPIO_WritePin(LD_PORT, LD10, GPIO_PIN_SET) //RED2
-#define LD3_OFF HAL_GPIO_WritePin(LD_PORT, LD3, GPIO_PIN_RESET) //RED1
-#define LD4_OFF HAL_GPIO_WritePin(LD_PORT, LD4, GPIO_PIN_RESET) //BLUE1
-#define LD5_OFF HAL_GPIO_WritePin(LD_PORT, LD5, GPIO_PIN_RESET) //ORANGE1
-#define LD6_OFF HAL_GPIO_WritePin(LD_PORT, LD6, GPIO_PIN_RESET) //GREEN1
-#define LD7_OFF HAL_GPIO_WritePin(LD_PORT, LD7, GPIO_PIN_RESET) //GREEN2
-#define LD8_OFF HAL_GPIO_WritePin(LD_PORT, LD8, GPIO_PIN_RESET) //ORANGE2
-#define LD9_OFF HAL_GPIO_WritePin(LD_PORT, LD9, GPIO_PIN_RESET) //BLUE2
-#define LD10_OFF HAL_GPIO_WritePin(LD_PORT, LD10, GPIO_PIN_RESET) //RED2
-//------------------------------------------------
-#define LSM303DLHC_NORMAL_MODE            ((uint8_t)0x00)
-#define LSM303DLHC_LOWPOWER_MODE          ((uint8_t)0x08)
-//-------------------------------------------------
-#define LSM303DLHC_ODR_1_HZ                ((uint8_t)0x10)  /*!< Output Data Rate = 1 Hz */
-#define LSM303DLHC_ODR_10_HZ               ((uint8_t)0x20)  /*!< Output Data Rate = 10 Hz */
-#define LSM303DLHC_ODR_25_HZ               ((uint8_t)0x30)  /*!< Output Data Rate = 25 Hz */
-#define LSM303DLHC_ODR_50_HZ               ((uint8_t)0x40)  /*!< Output Data Rate = 50 Hz */
-#define LSM303DLHC_ODR_100_HZ              ((uint8_t)0x50)  /*!< Output Data Rate = 100 Hz */
-#define LSM303DLHC_ODR_200_HZ              ((uint8_t)0x60)  /*!< Output Data Rate = 200 Hz */
-#define LSM303DLHC_ODR_400_HZ              ((uint8_t)0x70)  /*!< Output Data Rate = 400 Hz */
-#define LSM303DLHC_ODR_1620_HZ_LP          ((uint8_t)0x80)  /*!< Output Data Rate = 1620 Hz only in Low Power Mode */
-#define LSM303DLHC_ODR_1344_HZ             ((uint8_t)0x90)  /*!< Output Data Rate = 1344 Hz in Normal mode and 5376 Hz*/
-//-------------------------------------------------
-#define LSM303DLHC_X_ENABLE                ((uint8_t)0x01)
-#define LSM303DLHC_Y_ENABLE                ((uint8_t)0x02)
-#define LSM303DLHC_Z_ENABLE                ((uint8_t)0x04)
-#define LSM303DLHC_AXES_ENABLE             ((uint8_t)0x07)
-#define LSM303DLHC_AXES_DISABLE            ((uint8_t)0x00)
-//-------------------------------------------------
-#define LSM303DLHC_HR_ENABLE               ((uint8_t)0x08)
-#define LSM303DLHC_HR_DISABLE              ((uint8_t)0x00)
-//-------------------------------------------------
-#define LSM303DLHC_FULLSCALE_2G            ((uint8_t)0x00)  /*!< ±2 g */
-#define LSM303DLHC_FULLSCALE_4G            ((uint8_t)0x10)  /*!< ±4 g */
-#define LSM303DLHC_FULLSCALE_8G            ((uint8_t)0x20)  /*!< ±8 g */
-#define LSM303DLHC_FULLSCALE_16G           ((uint8_t)0x30)  /*!< ±16 g */
-//-------------------------------------------------
-#define LSM303DLHC_BlockUpdate_Continous   ((uint8_t)0x00) /*!< Continuos Update */
-#define LSM303DLHC_BlockUpdate_Single      ((uint8_t)0x80) /*!< Single Update: output registers not updated until MSB and LSB reading */
-//-------------------------------------------------
-#define LSM303DLHC_BLE_LSB                 ((uint8_t)0x00) /*!< Little Endian: data LSB @ lower address */
-#define LSM303DLHC_BLE_MSB                 ((uint8_t)0x40) /*!< Big Endian: data MSB @ lower address */
-//-------------------------------------------------
-#define LSM303DLHC_HPM_NORMAL_MODE_RES     ((uint8_t)0x00)
-#define LSM303DLHC_HPM_REF_SIGNAL          ((uint8_t)0x40)
-#define LSM303DLHC_HPM_NORMAL_MODE         ((uint8_t)0x80)
-#define LSM303DLHC_HPM_AUTORESET_INT       ((uint8_t)0xC0)
-//-------------------------------------------------
-#define LSM303DLHC_HPFCF_8                 ((uint8_t)0x00)
-#define LSM303DLHC_HPFCF_16                ((uint8_t)0x10)
-#define LSM303DLHC_HPFCF_32                ((uint8_t)0x20)
-#define LSM303DLHC_HPFCF_64                ((uint8_t)0x30)
-//-------------------------------------------------
-#define LSM303DLHC_HPF_AOI1_DISABLE        ((uint8_t)0x00)
-#define LSM303DLHC_HPF_AOI1_ENABLE              ((uint8_t)0x01)
-//-------------------------------------------------
-#define LSM303DLHC_HPF_AOI2_DISABLE        ((uint8_t)0x00)
-#define LSM303DLHC_HPF_AOI2_ENABLE         ((uint8_t)0x02)
-//-------------------------------------------------
-#define LSM303DLHC_CTRL_REG1_A               0x20  /* Control register 1 acceleration */
-#define LSM303DLHC_CTRL_REG2_A               0x21  /* Control register 2 acceleration */
-#define LSM303DLHC_CTRL_REG3_A               0x22  /* Control register 3 acceleration */
-#define LSM303DLHC_CTRL_REG4_A               0x23  /* Control register 4 acceleration */
-#define LSM303DLHC_CTRL_REG5_A               0x24  /* Control register 5 acceleration */
-//-------------------------------------------------
-#define LSM303DLHC_ACC_SENSITIVITY_2G     ((uint8_t)1)  /*!< accelerometer sensitivity with 2 g full scale [mg/LSB] */
-#define LSM303DLHC_ACC_SENSITIVITY_4G     ((uint8_t)2)  /*!< accelerometer sensitivity with 4 g full scale [mg/LSB] */
-#define LSM303DLHC_ACC_SENSITIVITY_8G     ((uint8_t)4)  /*!< accelerometer sensitivity with 8 g full scale [mg/LSB] */
-#define LSM303DLHC_ACC_SENSITIVITY_16G    ((uint8_t)12) /*!< accelerometer sensitivity with 12 g full scale [mg/LSB] */
-//------------------------------------------------
-#define LSM303DLHC_OUT_X_L_A                 0x28  /* Output Register X acceleration */
-#define LSM303DLHC_OUT_X_H_A                 0x29  /* Output Register X acceleration */
-#define LSM303DLHC_OUT_Y_L_A                 0x2A  /* Output Register Y acceleration */
-#define LSM303DLHC_OUT_Y_H_A                 0x2B  /* Output Register Y acceleration */
-#define LSM303DLHC_OUT_Z_L_A                 0x2C  /* Output Register Z acceleration */
-#define LSM303DLHC_OUT_Z_H_A                 0x2D  /* Output Register Z acceleration */
-void Accel_Ini(void);
-void Accel_ReadAcc(void);
-//------------------------------------------------
-#endif /* LSM303DLHC_H_ */
+#ifndef __sparkfun_lis331_h__
+#define __sparkfun_lis331_h__
+
+#include "stm32l1xx_hal.h" // или соответствующий хедер HAL
+#include <stdint.h>
+
+#define CTRL_REG1        0x20
+#define CTRL_REG2        0x21
+#define CTRL_REG3        0x22
+#define CTRL_REG4        0x23
+#define CTRL_REG5        0x24
+#define HP_FILTER_RESET  0x25
+#define REFERENCE        0x26
+#define STATUS_REG       0x27
+#define OUT_X_L          0x28
+#define OUT_X_H          0x29
+#define OUT_Y_L          0x2A
+#define OUT_Y_H          0x2B
+#define OUT_Z_L          0x2C
+#define OUT_Z_H          0x2D
+#define INT1_CFG         0x30
+#define INT1_SOURCE      0x31
+#define INT1_THS         0x32
+#define INT1_DURATION    0x33
+#define INT2_CFG         0x34
+#define INT2_SOURCE      0x35
+#define INT2_THS         0x36
+#define INT2_DURATION    0x37
+
+
+typedef enum {USE_I2C, USE_SPI} comm_mode;
+typedef enum {POWER_DOWN, NORMAL, LOW_POWER_0_5HZ, LOW_POWER_1HZ, LOW_POWER_2HZ, LOW_POWER_5HZ, LOW_POWER_10HZ} power_mode;
+typedef enum {DR_50HZ, DR_100HZ, DR_400HZ, DR_1000HZ} data_rate;
+typedef enum {HPC_8, HPC_16, HPC_32, HPC_64} high_pass_cutoff_freq_cfg;
+typedef enum {PUSH_PULL, OPEN_DRAIN} pp_od;
+typedef enum {INT_SRC, INT1_2_SRC, DRDY, BOOT} int_sig_src;
+typedef enum {LOW_RANGE, MED_RANGE, NO_RANGE, HIGH_RANGE} fs_range;
+typedef enum {X_AXIS, Y_AXIS, Z_AXIS} int_axis;
+typedef enum {TRIG_ON_HIGH, TRIG_ON_LOW} trig_on_level;
+
+
+typedef struct {
+    comm_mode mode;    
+    uint8_t address; 
+    GPIO_TypeDef* CSPinPort; 
+    uint16_t CSPin;         
+} LIS331_t;
+
+
+void LIS331_Init(LIS331_t* lis, comm_mode mode);
+void LIS331_SetPowerMode(LIS331_t* lis, power_mode pmode);
+void LIS331_SetODR(LIS331_t* lis, data_rate drate);
+void LIS331_ReadAxes(LIS331_t* lis, int16_t* x, int16_t* y, int16_t* z);
+void LIS331_WriteReg(LIS331_t* lis, uint8_t reg_address, uint8_t* data, uint8_t len);
+void LIS331_ReadReg(LIS331_t* lis, uint8_t reg_address, uint8_t* data, uint8_t len);
+
+#endif

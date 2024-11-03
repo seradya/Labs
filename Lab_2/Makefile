@@ -67,7 +67,9 @@ FreeRTOS-Kernel/timers.c \
 FreeRTOS-Kernel/portable/MemMang/heap_4.c \
 FreeRTOS-Kernel/portable/GCC/ARM_CM3/port.c \
 Core/Src/BME280.c \
-Core/Src/vl6180.c
+Core/Src/vl6180.c \
+Core/Src/stmpe1600.c \
+Core/Src/Accel.c
 
 # ASM sources
 ASM_SOURCES =  \
