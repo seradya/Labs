@@ -7,16 +7,18 @@ void LIS331_Init(LIS331_t* lis, comm_mode mode) {
     
     // Устанавливаем стандартный режим
     LIS331_SetPowerMode(lis, NORMAL);
-    
+    for (uint32_t i = 100; i > 0; i--){};
     // Включаем оси
-    uint8_t data = 0x07;
+    uint8_t data = 0;
+    LIS331_ReadReg(lis, CTRL_REG1, &data, 1);
+    data |= 0x07;
     LIS331_WriteReg(lis, CTRL_REG1, &data, 1);
 }
 
 void LIS331_SetPowerMode(LIS331_t* lis, power_mode pmode) {
     uint8_t data;
     LIS331_ReadReg(lis, CTRL_REG1, &data, 1);
-    
+    for (uint32_t i = 100; i > 0; i--){};
     data &= ~0xE0;  
     data |= pmode << 5;  
     LIS331_WriteReg(lis, CTRL_REG1, &data, 1);
@@ -25,6 +27,8 @@ void LIS331_SetPowerMode(LIS331_t* lis, power_mode pmode) {
 void LIS331_SetODR(LIS331_t* lis, data_rate drate) {
     uint8_t data;
     LIS331_ReadReg(lis, CTRL_REG1, &data, 1);
+
+    for (uint32_t i = 100; i > 0; i--){};
     
     data &= ~0x18; 
     data |= drate << 3;  
@@ -49,6 +53,8 @@ void LIS331_ReadAxes(LIS331_t* lis, int16_t* x, int16_t* y, int16_t* z) {
 void LIS331_WriteReg(LIS331_t* lis, uint8_t reg_address, uint8_t* data, uint8_t len) {
     if (lis->mode == USE_I2C) {
         // Используем HAL для I2C
+        //uint8_t buff[2] = {reg_address, *data};
+        //HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)(lis->address << 1), buff, len + 1, HAL_MAX_DELAY);
         HAL_I2C_Mem_Write(&hi2c1, (uint16_t)(lis->address << 1), reg_address, I2C_MEMADD_SIZE_8BIT, data, len, HAL_MAX_DELAY);
     } else if (lis->mode == USE_SPI) {
         // Для SPI

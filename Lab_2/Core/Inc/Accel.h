@@ -4,6 +4,7 @@
 #include "stm32l1xx_hal.h" // или соответствующий хедер HAL
 #include <stdint.h>
 
+#define WHO_AM_I         0x0F
 #define CTRL_REG1        0x20
 #define CTRL_REG2        0x21
 #define CTRL_REG3        0x22

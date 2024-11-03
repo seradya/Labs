@@ -410,7 +410,7 @@ void vl6180_ReadData(void)
 		//HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);
 		switch_state=new_switch_state;
 		status = vl6180_Prepare();
-		if(status) Error_Handler();
+		//if(status) Error_Handler();
 		VL6180_State.mode = RunAlsPoll;
     InitAlsMode();
 	}
@@ -431,7 +431,7 @@ int vl6180_ini(void)
 	vl6180_SetChipEn(1);
 	Delay_MS_Tim(1);
 	status = vl6180_WaitDeviceBooted();
-	if(status) return -1;
+	if(status) return 1;
 	vl6180_ReadByte(IDENTIFICATION__MODEL_ID, &dt);
 	//sprintf(str1,"vl6180 ID: 0x%02X\r\n",dt);
 	//HAL_UART_Transmit(&huart2, (uint8_t*)str1,strlen(str1),0x1000);

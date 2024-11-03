@@ -43,8 +43,8 @@ int stmpe1600_ini(void)
 	} while(0);
 	if( status == 0 && data[0]==0 && data[1]==0x16)
 	{
-		data[0] = GPDR; //àäðåñ ðåãèñòðà
-		gpio_direction = ~V2_DISP_SEL; //Íà âõîä óñòàíàâëèâàåì òîëüêî íîæêó ïåðåêëþ÷àòåëÿ, îñòàëüíûå íà âûõîä
+		data[0] = GPDR; 
+		gpio_direction = ~V2_DISP_SEL; 
 		memcpy(data+1, &gpio_direction, 2);
 		status=HAL_I2C_Master_Transmit(&hi2c1, EXPANDER_I2C_ADDRESS, data, 3, 100);
 		gpio_data = (V2_D1|V2_D2|V2_D3| V2_D4);

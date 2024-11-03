@@ -39,7 +39,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define STACK_SIZE 256
+#define STACK_SIZE 128
 
 #define P_THS 120000
 #define T_THS 25
@@ -113,11 +113,11 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-  xTaskCreate(GreenTask, "GreenTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(BlueTask, "BlueTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
-  xTaskCreate(BMETask, "BMETask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
-  //xTaskCreate(VLXTask, "VLXTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(ACCTask, "ACCTask", STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(GreenTask, "GreenTask", 32, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(BlueTask, "BlueTask", 32, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
+  xTaskCreate(BMETask, "BMETask", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
+  //xTaskCreate(VLXTask, "VLXTask", 64, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(ACCTask, "ACCTask", 128, NULL, tskIDLE_PRIORITY + 2, NULL);
   vTaskSuspend(BlueTaskHandle);
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -226,6 +226,7 @@ void BMETask(void *argument)
     }
     else
     {
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
       vTaskSuspend(BlueTaskHandle);
     }
   }
@@ -234,14 +235,14 @@ void BMETask(void *argument)
 
 void VLXTask(void *argument)
 {
-  if (!stmpe1600_ini())
+  if (stmpe1600_ini())
   {
-		uint32_t status = vl6180_ini();
-		if(status)
+		if(vl6180_ini())
     {
       vTaskDelete(NULL);
     }
   }
+
   while(1)
   {
     vl6180_ReadData();
@@ -255,13 +256,13 @@ void ACCTask(void *argument)
   int16_t x, y, z;
   LIS331_t lis331;
   lis331.mode = USE_I2C; 
-  lis331.address = 0x19;  
+  lis331.address = 0x18;  
   LIS331_Init(&lis331, USE_I2C);
   while(1)
   {
     LIS331_ReadAxes(&lis331, &x, &y, &z);
   }
-  
+
   vTaskDelete(NULL);
 }
 /* USER CODE END 4 */
