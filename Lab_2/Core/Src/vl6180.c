@@ -26,14 +26,14 @@ static const uint16_t AlsGainLookUp[8] = {
 int vl6180_I2C_Write(uint8_t *buff, uint8_t len)
 {
   int status;
-  status = HAL_I2C_Master_Transmit(&hi2c1, VL6180_ADDRESS, buff, len , 100);
+  status = HAL_I2C_Master_Transmit(&hi2c1, VL6180_ADDRESS, buff, len , HAL_MAX_DELAY);
   return status;
 }
 //-------------------------------------------------
 int vl6180_I2C_Read(uint8_t *buff, uint8_t len)
 {
   int status;
-  status = HAL_I2C_Master_Receive(&hi2c1, VL6180_ADDRESS, buff, len , 100);
+  status = HAL_I2C_Master_Receive(&hi2c1, VL6180_ADDRESS, buff, len , HAL_MAX_DELAY);
   return status;
 }
 //-------------------------------------------------
@@ -427,9 +427,9 @@ int vl6180_ini(void)
   int status;
 	uint8_t dt;
 	vl6180_SetChipEn(0);
-	Delay_MS_Tim(10);
+	//Delay_MS_Tim(10);
 	vl6180_SetChipEn(1);
-	Delay_MS_Tim(1);
+	//Delay_MS_Tim(1);
 	status = vl6180_WaitDeviceBooted();
 	if(status) return 1;
 	vl6180_ReadByte(IDENTIFICATION__MODEL_ID, &dt);

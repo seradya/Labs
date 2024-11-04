@@ -14,6 +14,12 @@
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
+
+  Developers:
+  Serebrennikov A.
+  Dobrotin A.
+  Taralo A.
+  
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -26,6 +32,8 @@
 /* USER CODE BEGIN Includes */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
 #include "BME280.h"
 #include "vl6180.h"
@@ -42,7 +50,7 @@
 #define STACK_SIZE 128
 
 #define P_THS 120000
-#define T_THS 25
+#define T_THS 27
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -60,6 +68,9 @@ volatile uint32_t TickCnt;
 volatile uint16_t SwitchCnt=0;
 extern State_ptr VL6180_State;
 extern VL6180x_AlsData_t Als;
+
+QueueHandle_t queue_uart;
+SemaphoreHandle_t xSemaphore;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,6 +84,7 @@ void BlueTask(void *argument);
 void BMETask(void *argument);
 void VLXTask(void *argument);
 void ACCTask(void *argument);
+void UART_print(void *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,8 +128,13 @@ int main(void)
   xTaskCreate(GreenTask, "GreenTask", 32, NULL, tskIDLE_PRIORITY + 2, NULL);
   xTaskCreate(BlueTask, "BlueTask", 32, NULL, tskIDLE_PRIORITY + 2, &BlueTaskHandle);
   xTaskCreate(BMETask, "BMETask", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
-  //xTaskCreate(VLXTask, "VLXTask", 64, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(ACCTask, "ACCTask", 128, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(VLXTask, "VLXTask", 128, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(ACCTask, "ACCTask", 150, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(UART_print, "UART_print", 80, NULL, tskIDLE_PRIORITY + 2, NULL);
+
+  queue_uart = xQueueCreate( 256, 32 );
+  xSemaphore = xSemaphoreCreateMutex();
+
   vTaskSuspend(BlueTaskHandle);
   vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -205,7 +222,7 @@ void BMETask(void *argument)
 {
   volatile uint32_t pressure = 0;
   volatile float temperature = 0;
-  uint8_t str[32];
+  uint8_t str_tx[32];
 
   BME280_Init();
 
@@ -213,39 +230,53 @@ void BMETask(void *argument)
   {
     pressure = BME280_ReadPressure();
     temperature = BME280_ReadTemperature();
-    vTaskDelay(1000/ portTICK_PERIOD_MS);
 
-    sprintf(str, "Temp: %2.2fC  Press: %dPa\n", temperature, pressure);
-    HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
+    sprintf(str_tx, "Temp: %2.2fC  Press: %dPa\n\n", temperature, pressure);
+
+    xQueueSend(queue_uart, str_tx, (( TickType_t ) 10 ) != pdPASS);
+    //HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
 
     if((pressure > P_THS) || (temperature > T_THS))
     {
       vTaskResume(BlueTaskHandle);
-      sprintf(str, "Warning! Check data!  ");
-      HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
+      sprintf(str_tx, "Warning! Check data!  \n\n");
+      xQueueSend(queue_uart, str_tx, (( TickType_t ) 10 ) != pdPASS);
+      ///HAL_UART_Transmit(&huart1, str, strlen(str), 1000);
     }
     else
     {
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
       vTaskSuspend(BlueTaskHandle);
     }
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 	vTaskDelete(NULL);
 }
 
 void VLXTask(void *argument)
 {
+  uint8_t str_tx[32];
+  xSemaphoreTake( xSemaphore, portMAX_DELAY );
   if (stmpe1600_ini())
   {
 		if(vl6180_ini())
     {
+      xSemaphoreGive( xSemaphore);
       vTaskDelete(NULL);
     }
   }
+  xSemaphoreGive( xSemaphore);
 
   while(1)
   {
+    xSemaphoreTake( xSemaphore, portMAX_DELAY );
     vl6180_ReadData();
+    xSemaphoreGive( xSemaphore);
+
+    sprintf(str_tx, "als: %lu \n\n", Als.lux); 
+    xQueueSend(queue_uart, str_tx, (( TickType_t ) 10 ) != pdPASS);
+
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
   }
   vTaskDelete(NULL);
 
@@ -254,16 +285,43 @@ void VLXTask(void *argument)
 void ACCTask(void *argument)
 {
   int16_t x, y, z;
+  uint8_t str_tx[32];
   LIS331_t lis331;
   lis331.mode = USE_I2C; 
-  lis331.address = 0x18;  
+  lis331.address = 0x18;
+
+  xSemaphoreTake( xSemaphore, portMAX_DELAY );
   LIS331_Init(&lis331, USE_I2C);
+  xSemaphoreGive( xSemaphore);
+  
   while(1)
   {
+    xSemaphoreTake( xSemaphore, portMAX_DELAY );
     LIS331_ReadAxes(&lis331, &x, &y, &z);
+    xSemaphoreGive( xSemaphore);
+    
+    sprintf(str_tx, "x: %d  y: %d  z: %d\n\n", x, y, z); 
+
+    xQueueSend(queue_uart, str_tx, portMAX_DELAY);
+
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
   }
 
   vTaskDelete(NULL);
+}
+
+void UART_print(void *argument)
+{
+  const uint8_t rx_str[32];
+
+  while(1)
+  {
+    xQueueReceive(queue_uart, (void* const)rx_str, portMAX_DELAY);
+    HAL_UART_Transmit(&huart1, rx_str, strlen((const char *)rx_str), 1000);
+  }
+
+  vTaskDelete(NULL);
+
 }
 /* USER CODE END 4 */
 
