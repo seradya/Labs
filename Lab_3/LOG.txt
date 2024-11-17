@@ -1,0 +1,215 @@
+---- Opened the serial port /dev/ttyACM0 ----
+Build:Sep 19 2022
+rst:0xc (SW_CPU),boot:0x2c (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4001975a
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875730,len:0x163c
+load:0x4086c110,len:0xe84
+load:0x4086e610,len:0x2fac
+entry 0x4086c11c
+I (27) boot: ESP-IDF v5.4-dev-4076-gce6085349f 2nd stage bootloader
+I (27) boot: compile time Nov 17 2024 16:09:20
+I (29) boot: chip revision: v0.1
+I (29) boot: efuse block revision: v0.3
+I (32) boot.esp32c6: SPI Speed      : 80MHz
+I (36) boot.esp32c6: SPI Mode       : DIO
+I (40) boot.esp32c6: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (48) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (70) boot:  2 factory          factory app      00 00 00010000 00100000
+I (77) boot: End of partition table
+I (80) esp_image: segment 0: paddr=00010020 vaddr=42098020 size=1ca7ch (117372) map
+I (130) esp_image: segment 1: paddr=0002caa4 vaddr=40800000 size=03574h ( 13684) load
+I (137) esp_image: segment 2: paddr=00030020 vaddr=42000020 size=970d8h (618712) map
+I (363) esp_image: segment 3: paddr=000c7100 vaddr=40803574 size=17dbch ( 97724) load
+I (405) esp_image: segment 4: paddr=000deec4 vaddr=4081b330 size=03b10h ( 15120) load
+I (425) boot: Loaded app from partition at offset 0x10000
+I (426) boot: Disabling RNG early entropy source...
+I (436) cpu_start: Unicore app
+I (445) cpu_start: Pro cpu start user code
+I (445) cpu_start: cpu freq: 160000000 Hz
+I (446) app_init: Application information:
+I (446) app_init: Project name:     Lab_3
+I (449) app_init: App version:      6169633
+I (453) app_init: Compile time:     Nov 17 2024 16:09:04
+I (458) app_init: ELF file SHA256:  1a25f3318...
+I (462) app_init: ESP-IDF:          v5.4-dev-4076-gce6085349f
+I (468) efuse_init: Min chip rev:     v0.0
+I (472) efuse_init: Max chip rev:     v0.99 
+I (476) efuse_init: Chip rev:         v0.1
+I (480) heap_init: Initializing. RAM available for dynamic allocation:
+I (486) heap_init: At 40824710 len 00057F00 (351 KiB): RAM
+I (491) heap_init: At 4087C610 len 00002F54 (11 KiB): RAM
+I (496) heap_init: At 50000000 len 00003FE8 (15 KiB): RTCRAM
+I (502) spi_flash: detected chip: generic
+I (505) spi_flash: flash io: dio
+W (508) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (521) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (527) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (533) coexist: coex firmware version: bd93f5826
+I (538) coexist: coexist rom version 5b8dcfa
+I (542) main_task: Started on CPU0
+I (542) main_task: Calling app_main()
+I (552) example_connect: Start example_connect.
+I (552) pp: pp rom version: 5b8dcfa
+I (552) net80211: net80211 rom version: 5b8dcfa
+I (562) wifi:wifi driver task: 4082d314, prio:23, stack:6656, core=0
+I (562) wifi:wifi firmware version: 434429f30
+I (562) wifi:wifi certification version: v7.0
+I (572) wifi:config NVS flash: enabled
+I (572) wifi:config nano formatting: disabled
+I (572) wifi:mac_version:HAL_MAC_ESP32AX_761,ut_version:N, band mode:0x1
+I (582) wifi:Init data frame dynamic rx buffer num: 32
+I (592) wifi:Init static rx mgmt buffer num: 5
+I (592) wifi:Init management short buffer num: 32
+I (592) wifi:Init dynamic tx buffer num: 32
+I (602) wifi:Init static tx FG buffer num: 2
+I (602) wifi:Init static rx buffer size: 1700 (rxctrl:92, csi:512)
+I (612) wifi:Init static rx buffer num: 10
+I (612) wifi:Init dynamic rx buffer num: 32
+I (622) wifi_init: rx ba win: 6
+I (622) wifi_init: accept mbox: 6
+I (622) wifi_init: tcpip mbox: 32
+I (622) wifi_init: udp mbox: 6
+I (632) wifi_init: tcp mbox: 6
+I (632) wifi_init: tcp tx win: 5760
+I (632) wifi_init: tcp rx win: 5760
+I (642) wifi_init: tcp mss: 1440
+I (642) wifi_init: WiFi IRAM OP enabled
+I (642) wifi_init: WiFi RX IRAM OP enabled
+I (652) wifi_init: WiFi SLP IRAM OP enabled
+I (652) phy_init: phy_version 320,348a293,Sep  3 2024,16:33:12
+W (722) wifi:ACK_TAB0   :0x   90a0b, QAM16:0x9 (24Mbps), QPSK:0xa (12Mbps), BPSK:0xb (6Mbps)
+W (722) wifi:CTS_TAB0   :0x   90a0b, QAM16:0x9 (24Mbps), QPSK:0xa (12Mbps), BPSK:0xb (6Mbps)
+W (732) wifi:(agc)0x600a7128:0xd21b1800, min.avgNF:0xce->0xd2(dB), RCalCount:0x1b1, min.RRssi:0x800(-128.00)
+W (732) wifi:(TB)WDEV_PWR_TB_MCS0:19
+W (742) wifi:(TB)WDEV_PWR_TB_MCS1:19
+W (742) wifi:(TB)WDEV_PWR_TB_MCS2:19
+W (742) wifi:(TB)WDEV_PWR_TB_MCS3:19
+W (752) wifi:(TB)WDEV_PWR_TB_MCS4:19
+W (752) wifi:(TB)WDEV_PWR_TB_MCS5:19
+W (752) wifi:(TB)WDEV_PWR_TB_MCS6:18
+W (762) wifi:(TB)WDEV_PWR_TB_MCS7:18
+W (762) wifi:(TB)WDEV_PWR_TB_MCS8:17
+W (762) wifi:(TB)WDEV_PWR_TB_MCS9:15
+W (772) wifi:(TB)WDEV_PWR_TB_MCS10:15
+W (772) wifi:(TB)WDEV_PWR_TB_MCS11:15
+I (772) wifi:11ax coex: WDEVAX_PTI0(0x55777555), WDEVAX_PTI1(0x00003377).
+
+I (782) wifi:mode : sta (54:32:04:29:53:44)
+I (782) wifi:enable tsf
+I (792) example_connect: Connecting to OnePlus 7T...
+W (792) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+I (802) example_connect: Waiting for IP(s)
+I (3212) example_connect: Wi-Fi disconnected 201, trying to reconnect...
+I (5612) example_connect: Wi-Fi disconnected 201, trying to reconnect...
+I (8022) example_connect: Wi-Fi disconnected 201, trying to reconnect...
+I (10722) wifi:new:<9,0>, old:<1,0>, ap:<255,255>, sta:<9,0>, prof:1, snd_ch_cfg:0x0
+I (10722) wifi:(connect)dot11_authmode:0x3, pairwise_cipher:0x3, group_cipher:0x3
+I (10722) wifi:state: init -> auth (0xb0)
+I (10732) wifi:state: auth -> assoc (0x0)
+I (10742) wifi:(assoc)RESP, Extended Capabilities length:1, operating_mode_notification:0
+I (10742) wifi:(assoc)RESP, Extended Capabilities, MBSSID:0, TWT Responder:0, OBSS Narrow Bandwidth RU In OFDMA Tolerance:0
+I (10752) wifi:state: assoc -> run (0x10)
+I (10752) wifi:(trc)phytype:CBW20-SGI, snr:59, maxRate:144, highestRateIdx:0
+W (10762) wifi:(trc)band:2G, phymode:3, highestRateIdx:0, lowestRateIdx:11, dataSchedTableSize:14
+I (10772) wifi:(trc)band:2G, rate(S-MCS7, rateIdx:0), ampdu(rate:S-MCS7, schedIdx(0, stop:8)), snr:59, ampduState:wait operational
+I (10782) wifi:ifidx:0, rssi:-23, nf:-82, phytype(0x3, CBW20-SGI), phymode(0x3, 11bgn), max_rate:144, he:0, vht:0, ht:1
+I (10792) wifi:(ht)max.RxAMPDULenExponent:3(65535 bytes), MMSS:4(2 us)
+I (10812) wifi:connected with OnePlus 7T, aid = 1, channel 9, BW20, bssid = da:6e:7c:9d:d4:02
+I (10812) wifi:security: WPA2-PSK, phy:11bgn, rssi:-23, cipher(pairwise:0x3, group:0x3), pmf:0, 
+I (10812) wifi:pm start, type: 1, twt_start:0
+
+I (10822) wifi:pm start, type:1, aid:0x1, trans-BSSID:da:6e:7c:9d:d4:02, BSSID[5]:0x2, mbssid(max-indicator:0, index:0), he:0
+I (10832) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (10832) wifi:set rx beacon pti, rx_bcn_pti: 10, bcn_timeout: 25000, mt_pti: 10, mt_time: 10000
+I (10842) wifi:[ADDBA]TX addba request, tid:0, dialogtoken:1, bufsize:64, A-MSDU:0(not supported), policy:1(IMR), ssn:0(0x0)
+I (10852) wifi:[ADDBA]TX addba request, tid:7, dialogtoken:2, bufsize:64, A-MSDU:0(not supported), policy:1(IMR), ssn:0(0x20)
+I (10872) wifi:[ADDBA]TX addba request, tid:5, dialogtoken:3, bufsize:64, A-MSDU:0(not supported), policy:1(IMR), ssn:0(0x0)
+I (10882) wifi:dp: 2, bi: 102400, li: 4, scale listen interval from 307200 us to 409600 us
+I (10882) wifi:AP's beacon interval = 102400 us, DTIM period = 2
+I (10892) wifi:[ADDBA]RX addba response, status:0, tid:0/tb:1(0xa1), bufsize:64, batimeout:0, txa_wnd:64
+I (10902) wifi:[ADDBA]RX addba response, status:0, tid:7/tb:1(0xa1), bufsize:64, batimeout:0, txa_wnd:64
+I (10912) wifi:[ADDBA]RX addba response, status:0, tid:5/tb:1(0xa1), bufsize:64, batimeout:0, txa_wnd:64
+W (10932) wifi:<ba-add>idx:0, ifx:0, tid:0, TAHI:0x10002d4, TALO:0x9d7c6eda, (ssn:0, win:64, cur_ssn:0), CONF:0xc0000005
+I (11942) esp_netif_handlers: example_netif_sta ip: 192.168.208.74, mask: 255.255.255.0, gw: 192.168.208.160
+I (11942) example_connect: Got IPv4 event: Interface "example_netif_sta" address: 192.168.208.74
+I (12552) example_connect: Got IPv6 event: Interface "example_netif_sta" address: fe80:0000:0000:0000:5632:04ff:fe29:5344, type: ESP_IP6_ADDR_IS_LINK_LOCAL
+I (12552) example_common: Connected to example_netif_sta
+I (12552) example_common: - IPv4 address: 192.168.208.74,
+I (12562) example_common: - IPv6 address: fe80:0000:0000:0000:5632:04ff:fe29:5344, type: ESP_IP6_ADDR_IS_LINK_LOCAL
+I (12572) main_task: Returned from app_main()
+I (12582) example: DNS lookup succeeded. IP=93.184.215.14
+I (12582) example: ... allocated socket
+I (12762) example: ... connected
+I (12762) example: ... socket send success
+I (12762) example: ... set socket receiving timeout success
+HTTP/1.0 200 OK
+Age: 402952
+Cache-Control: max-age=604800
+Content-Type: text/html; charset=UTF-8
+Date: Sun, 17 Nov 2024 13:11:50 GMT
+Etag: "3147526947+gzip+ident"
+Expires: Sun, 24 Nov 2024 13:11:50 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECAcc (nyd/D153)
+Vary: Accept-Encoding
+X-Cache: HIT
+Content-Length: 1256
+Connection: close
+
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+    body {
+        background-color: #f0f0f2;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        
+    }
+    div {
+        width: 600px;
+        margin: 5em auto;
+        padding: 2em;
+        background-color: #fdfdff;
+        border-radius: 0.5em;
+        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+    }
+    a:link, a:visited {
+        color: #38488f;
+        text-decoration: none;
+    }
+    @media (max-width: 700px) {
+        div {
+            margin: 0 auto;
+            width: auto;
+        }
+    }
+    </style>    
+</head>
+
+<body>
+<div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+</div>
+</body>
+</html>
+I (13152) example: ... done reading from socket. Last read return=0 errno=128.
+I (13162) example: 10... 
+I (14162) example: 9... 
+I (15162) example: 8... 
+---- Closed the serial port /dev/ttyACM0 ----
