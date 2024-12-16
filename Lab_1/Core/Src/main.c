@@ -69,7 +69,7 @@ if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == GPIO_PIN_RESET)
 else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13) == GPIO_PIN_RESET)
 {
   HAL_Delay(10);
-  if(buttons[0] == 1)
+  if((buttons[0] == 1) && (buttons[2] == 0) && (buttons[3] == 0))
     buttons[1] = 1;
   else
   {
@@ -83,7 +83,7 @@ else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13) == GPIO_PIN_RESET)
 else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14) == GPIO_PIN_RESET)
 {
   HAL_Delay(10);
-  if((buttons[0] == 1) || (buttons[1] == 1))
+  if((buttons[0] == 1) && (buttons[1] == 1) && (buttons[3] == 0))
     buttons[2] = 1;
   else
   {
@@ -97,7 +97,7 @@ else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14) == GPIO_PIN_RESET)
 else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15) == GPIO_PIN_RESET)
 {
   HAL_Delay(10);
-  if((buttons[0] == 1) || (buttons[1] == 1) || (buttons[2] == 1))
+  if((buttons[0] == 1) && (buttons[1] == 1) && (buttons[2] == 1))
   {
     buttons[0] = 0;
     buttons[1] = 0;
